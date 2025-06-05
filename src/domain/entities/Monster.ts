@@ -1,7 +1,16 @@
 import { z } from 'zod'
 
 export const MonsterSchema = z.object({
-  name: z.string().min(1),
+  name: z.preprocess(
+    (val) => {
+      if (typeof val === 'string') {
+        const trimmed = val.trim()
+        return trimmed.length > 0 ? trimmed : undefined
+      }
+      return val
+    },
+    z.string().min(1, { message: 'Nome é obrigatório e não pode ser vazio' })
+  ),
   attack: z.number().int().min(0),
   defense: z.number().int().min(0),
   speed: z.number().int().min(0),
