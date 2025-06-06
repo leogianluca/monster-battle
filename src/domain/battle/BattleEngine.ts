@@ -8,75 +8,66 @@ export class BattleEngine {
   private readonly monsterB: Monster
   private readonly rounds: RoundResult[] = []
   private readonly maxRounds: number
+  private currentRound = 0
+
+  private attackerCurrent: Monster
+  private defenderCurrent: Monster
 
   constructor(monsterA: Monster, monsterB: Monster, maxRounds = MAX_ROUNDS) {
     this.monsterA = monsterA.clone()
     this.monsterB = monsterB.clone()
     this.maxRounds = maxRounds
+
+    const [attacker, defender] = this.getAttackOrder(this.monsterA, this.monsterB)
+    this.attackerCurrent = attacker.clone()
+    this.defenderCurrent = defender.clone()
   }
 
-  public run(): BattleResult {
-    // Caso: algum monstro já está morto
-    if (this.monsterA.hp <= 0 || this.monsterB.hp <= 0) {
-      const winner = this.monsterA.hp > 0 ? this.monsterA : this.monsterB
-      const loser = this.monsterA.hp > 0 ? this.monsterB : this.monsterA
+  public *runRounds(): Generator<RoundResult, void, unknown> {
+    if (this.attackerCurrent.hp <= 0 || this.defenderCurrent.hp <= 0) {
+      const winner = this.attackerCurrent.hp > 0 ? this.attackerCurrent : this.defenderCurrent
+      const loser = this.attackerCurrent.hp > 0 ? this.defenderCurrent : this.attackerCurrent
       this.rounds.push(
-        RoundResult.instantDefeat(winner, loser, this.rounds.length + 1)
+        RoundResult.instantDefeat(winner, loser, 1)
       )
-      return BattleResult.finished({
-        rounds: this.rounds,
-        winner,
-        loser,
-        isDraw: false,
-        maxRounds: this.maxRounds,
-      })
+      return
     }
 
-    // Define ordem inicial do ataque
-    const [attacker, defender] = this.getAttackOrder(this.monsterA, this.monsterB)
+    while (this.currentRound < this.maxRounds) {
+      this.currentRound++
+      const defenderHpBefore = this.defenderCurrent.hp
 
-    // Clona para manipular HP sem alterar os originais
-    let attackerCurrent = attacker.clone()
-    let defenderCurrent = defender.clone()
+      const damage = this.calculateDamage(this.attackerCurrent, this.defenderCurrent)
+      const newHp = Math.max(0, this.defenderCurrent.hp - damage)
 
-    for (let i = 0; i < this.maxRounds; i++) {
-      const defenderHpBefore = defenderCurrent.hp
+      this.defenderCurrent = this.defenderCurrent.withHp(newHp)
 
-      const damage = this.calculateDamage(attackerCurrent, defenderCurrent)
-      const newHp = Math.max(0, defenderCurrent.hp - damage)
-
-      defenderCurrent = defenderCurrent.withHp(newHp)
-
-      this.rounds.push(new RoundResult({
-        roundNumber: i + 1,
-        attacker: attackerCurrent.clone(),
-        defender: defenderCurrent.clone(),
+      const round = new RoundResult({
+        roundNumber: this.currentRound,
+        attacker: this.attackerCurrent.clone(),
+        defender: this.defenderCurrent.clone(),
         damage,
         defenderHpBefore,
         defenderHpAfter: newHp,
-      }))
+      })
 
-      if (defenderCurrent.hp <= 0) {
-        return BattleResult.finished({
-          rounds: this.rounds,
-          winner: attackerCurrent,
-          loser: defenderCurrent,
-          isDraw: false,
-          maxRounds: this.maxRounds,
-        })
-      }
+      this.rounds.push(round)
 
-      // Troca os papéis para a próxima rodada (atacante vira defensor e vice-versa)
-      [attackerCurrent, defenderCurrent] = [defenderCurrent, attackerCurrent]
+      yield round
+
+      if (newHp <= 0) return
+
+      [this.attackerCurrent, this.defenderCurrent] = [this.defenderCurrent, this.attackerCurrent]
     }
+  }
 
-    // Após máximo de rounds, verifica empate ou vencedor
-    const isDraw = attackerCurrent.hp === defenderCurrent.hp && attackerCurrent.hp > 0
+  public getResult(): BattleResult {
+    const isDraw = this.attackerCurrent.hp === this.defenderCurrent.hp && this.attackerCurrent.hp > 0
 
     return BattleResult.finished({
       rounds: this.rounds,
-      winner: isDraw ? null : attackerCurrent.hp > defenderCurrent.hp ? attackerCurrent : defenderCurrent,
-      loser: isDraw ? null : attackerCurrent.hp < defenderCurrent.hp ? attackerCurrent : defenderCurrent,
+      winner: isDraw ? null : this.attackerCurrent.hp > this.defenderCurrent.hp ? this.attackerCurrent : this.defenderCurrent,
+      loser: isDraw ? null : this.attackerCurrent.hp < this.defenderCurrent.hp ? this.attackerCurrent : this.defenderCurrent,
       isDraw,
       maxRounds: this.maxRounds,
     })
@@ -87,7 +78,7 @@ export class BattleEngine {
     if (b.speed > a.speed) return [b, a]
     if (a.attack > b.attack) return [a, b]
     if (b.attack > a.attack) return [b, a]
-    return [a, b] // empate técnico: A ataca primeiro
+    return [a, b]
   }
 
   private calculateDamage(attacker: Monster, defender: Monster): number {

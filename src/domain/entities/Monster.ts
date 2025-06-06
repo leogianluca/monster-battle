@@ -35,7 +35,6 @@ export class Monster {
   }
 
   withHp(newHp: number): Monster {
-    // Aqui é permitido hp 0, pois representa morte.
     return new Monster({
       ...this,
       hp: Math.max(0, newHp),
