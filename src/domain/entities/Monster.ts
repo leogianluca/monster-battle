@@ -1,21 +1,18 @@
 import { z } from 'zod'
 
+const positiveInt = (message: string) => z.number().int().gt(0, { message })
+const nonEmptyString = z.preprocess(
+  (val) => (typeof val === 'string' && val.trim().length > 0 ? val.trim() : undefined),
+  z.string().min(1, { message: 'Campo obrigatório e não pode ser vazio' })
+)
+
 export const MonsterSchema = z.object({
-  name: z.preprocess(
-    (val) => {
-      if (typeof val === 'string') {
-        const trimmed = val.trim()
-        return trimmed.length > 0 ? trimmed : undefined
-      }
-      return val
-    },
-    z.string().min(1, { message: 'Nome é obrigatório e não pode ser vazio' })
-  ),
-  attack: z.number().int().gt(0, { message: 'Attack deve ser maior que 0' }),
-  defense: z.number().int().gt(0, { message: 'Defense deve ser maior que 0' }),
-  speed: z.number().int().gt(0, { message: 'Speed deve ser maior que 0' }),
+  name: nonEmptyString,
+  attack: positiveInt('Attack deve ser maior que 0'),
+  defense: positiveInt('Defense deve ser maior que 0'),
+  speed: positiveInt('Speed deve ser maior que 0'),
   hp: z.number().int().gte(0, { message: 'HP deve ser maior ou igual a 0' }),
-  imageUrl: z.string().url(),
+  imageUrl: z.string().min(1, { message: 'Image URL é obrigatória' }).url({ message: 'Image URL deve ser uma URL válida' }),
 })
 
 export type MonsterProps = z.infer<typeof MonsterSchema>

@@ -49,4 +49,24 @@ export class BattleResult {
     })
   }
 
+  clone(): BattleResult {
+    const roundsClone = this.rounds.map(r => r.clone())
+    const winnerClone = this.winner ? this.winner.clone() : null
+    const loserClone = this.loser ? this.loser.clone() : null
+
+    return new BattleResult({
+      rounds: roundsClone.map(r => ({
+        roundNumber: r.roundNumber,
+        attacker: r.attacker,
+        defender: r.defender,
+        damage: r.damage,
+        defenderHpBefore: r.defenderHpBefore,
+        defenderHpAfter: r.defenderHpAfter,
+      })),
+      winner: winnerClone,
+      loser: loserClone,
+      isDraw: this.isDraw,
+      maxRounds: this.maxRounds,
+    })
+  }
 }

@@ -1,7 +1,8 @@
-import { Monster, MonsterSchema, type MonsterProps } from '../domain/entities/Monster'
 import { ZodError } from 'zod'
+import { Monster, MonsterSchema, type MonsterProps } from '../domain/entities/Monster'
+import type { MonsterCreateInput } from '../types'
 
-export function createMonster(data: unknown): Monster {
+export function createMonster(data: MonsterCreateInput): Monster {
   const parsedData: MonsterProps = MonsterSchema.parse(data)
 
   if (parsedData.hp === 0) {

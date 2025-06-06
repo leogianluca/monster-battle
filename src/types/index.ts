@@ -20,19 +20,11 @@ export type BattleStartInput = {
   maxRounds?: number
 }
 
-export type DamageInfo = {
-  attacker: Monster
-  defender: Monster
-  damage: number
-  defenderHpAfter: number
-  roundNumber: number
-}
-
-export type RoundResultType = DamageInfo
-
 export type MonsterCreateInput = {
   name: string
   hp: number
   attack: number
   defense: number
+  speed: number
+  imageUrl: string
 }

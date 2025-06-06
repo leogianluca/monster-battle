@@ -36,4 +36,15 @@ export class RoundResult {
       defenderHpAfter: 0,
     })
   }
+
+  clone(): RoundResult {
+    return new RoundResult({
+      roundNumber: this.roundNumber,
+      attacker: this.attacker.clone(),
+      defender: this.defender.clone(),
+      damage: this.damage,
+      defenderHpBefore: this.defenderHpBefore,
+      defenderHpAfter: this.defenderHpAfter,
+    })
+  }
 }
