@@ -11,10 +11,10 @@ export const MonsterSchema = z.object({
     },
     z.string().min(1, { message: 'Nome é obrigatório e não pode ser vazio' })
   ),
-  attack: z.number().int().min(0),
-  defense: z.number().int().min(0),
-  speed: z.number().int().min(0),
-  hp: z.number().int().min(1),
+  attack: z.number().int().gt(0, { message: 'Attack deve ser maior que 0' }),
+  defense: z.number().int().gt(0, { message: 'Defense deve ser maior que 0' }),
+  speed: z.number().int().gt(0, { message: 'Speed deve ser maior que 0' }),
+  hp: z.number().int().gte(0, { message: 'HP deve ser maior ou igual a 0' }),
   imageUrl: z.string().url(),
 })
 
@@ -38,6 +38,7 @@ export class Monster {
   }
 
   withHp(newHp: number): Monster {
+    // Aqui é permitido hp 0, pois representa morte.
     return new Monster({
       ...this,
       hp: Math.max(0, newHp),

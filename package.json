@@ -7,6 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:verbose": "vitest --reporter verbose",
+    "test:one": "vitest -t",
     "lint": "eslint .",
     "preview": "vite preview"
   },
