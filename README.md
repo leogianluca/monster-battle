@@ -91,3 +91,9 @@ Os testes estão localizados em arquivos \`.test.ts\` e cobrem:
 - Empates são resolvidos de forma declarada (ex: ambos morrem na última rodada).
 - Batalha com no máximo 10 rodadas.
 - Clonagem de instâncias para preservar imutabilidade.
+
+## 🌐 Acesse o Projeto Online
+
+Você pode testar a aplicação diretamente pelo link abaixo:
+
+[Judgment of the Beasts - Acessar agora](https://judgment-of-the-beasts.vercel.app/)
