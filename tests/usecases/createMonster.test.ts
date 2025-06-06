@@ -1,8 +1,9 @@
-import { createMonster } from '../../src/usecases/createMonster'
 import { ZodError } from 'zod'
+import type { MonsterCreateInput } from '../../src/types'
+import { createMonster } from '../../src/usecases/createMonster'
 
 describe('createMonster', () => {
-  const validMonsterInput = {
+  const validMonsterInput : MonsterCreateInput = {
     name: "Valid Monster",
     attack: 10,
     defense: 5,
