@@ -1,54 +1,93 @@
-# React + TypeScript + Vite
+# Monster Battle Arena 🐉⚔️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é uma aplicação front-end interativa para batalhas entre monstros. Os monstros são criados com atributos específicos, e a batalha é realizada com base em regras de combate definidas por lógica de negócio separada da interface.
 
-Currently, two official plugins are available:
+## 🎨 Inspiração Visual e Assets
+Toda a interface da aplicação foi inspirada no estilo visual do jogo de cartas Gwent, do universo The Witcher. O objetivo foi criar uma ambientação medieval, com foco em imersão e estilo próprio para a arena de batalha entre monstros.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🖼️ Fontes de imagens e texturas
+As imagens dos monstros foram geradas com auxílio do ChatGPT.
 
-## Expanding the ESLint configuration
+Texturas e elementos gráficos adicionais foram obtidos em:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [Textures](https://www.textures.com/library)
+- [Pixbay](pixabay.com)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+
+## 🔥 Funcionalidades
+
+- Criação de monstros com atributos personalizados.
+- Batalha entre dois monstros com regras pré-definidas.
+- Limite de 10 rodadas por batalha.
+- Interface com estilo medieval e botões estilizados.
+- Regras rigorosas para validação e execução da batalha.
+
+## 🧱 Tecnologias Utilizadas
+
+- [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Zod](https://zod.dev/) (para validação de dados)
+- Arquitetura limpa (entities, usecases, repositories, etc.)
+- [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) para testes
+
+## 🗂️ Estrutura do Projeto
+
+```
+src/
+│
+├── components/           # Componentes visuais reutilizáveis
+├── domain/
+│   ├── entities/         # Entidades do domínio (Monster, BattleResult, etc.)
+│   ├── battle/           # Engine de batalha
+│   └── rules/            # Constantes e regras de negócio
+│
+├── hooks/                # Hooks customizados
+├── pages/                # Páginas da aplicação (Home, CreateMonster, Battle)
+├── repositories/         # Implementações temporárias sem backend
+├── usecases/             # Casos de uso: criação de monstro, início de batalha
+├── index.css             # Estilos próprios
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Como Rodar o Projeto
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Clone o repositório
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+git clone https://github.com/leogianluca/judgment-of-the-beasts.git
+cd udgment-of-the-beasts
 ```
+
+### 2. Instale as dependências
+
+```bash
+npm install
+```
+
+### 3. Inicie o servidor de desenvolvimento
+
+```bash
+npm run dev
+```
+
+A aplicação estará disponível em \`http://localhost:5173\`.
+
+## ✅ Rodando os Testes
+
+```bash
+npm run test
+```
+
+Os testes estão localizados em arquivos \`.test.ts\` e cobrem:
+- Criação de monstros válidos e inválidos
+- Lógica de batalha (ataques, desempates, fim da batalha)
+- Limites de rounds
+
+## 📐 Regras da Batalha
+
+- O monstro mais rápido ataca primeiro.
+- Dano = ataque - defesa do oponente (mínimo de 1).
+- Monstros não podem ter HP negativo.
+- Empates são resolvidos de forma declarada (ex: ambos morrem na última rodada).
+- Batalha com no máximo 10 rodadas.
+- Clonagem de instâncias para preservar imutabilidade.
