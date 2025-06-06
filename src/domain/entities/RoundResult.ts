@@ -25,4 +25,15 @@ export class RoundResult {
     this.defenderHpBefore = props.defenderHpBefore
     this.defenderHpAfter = Math.max(0, props.defenderHpAfter)
   }
+
+  static instantDefeat(attacker: Monster, defender: Monster, roundNumber: number): RoundResult {
+    return new RoundResult({
+      roundNumber,
+      attacker,
+      defender,
+      damage: defender.hp,
+      defenderHpBefore: defender.hp,
+      defenderHpAfter: 0,
+    })
+  }
 }

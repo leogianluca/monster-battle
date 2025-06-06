@@ -23,4 +23,30 @@ export class BattleResult {
     this.isDraw = props.isDraw
     this.maxRounds = props.maxRounds
   }
+
+  static finished(props: {
+    winner: Monster | null
+    loser: Monster | null
+    isDraw: boolean
+    rounds: RoundResult[]
+    maxRounds: number
+  }): BattleResult {
+    const roundsProps = props.rounds.map(r => ({
+      roundNumber: r.roundNumber,
+      attacker: r.attacker,
+      defender: r.defender,
+      damage: r.damage,
+      defenderHpBefore: r.defenderHpBefore,
+      defenderHpAfter: r.defenderHpAfter,
+    }))
+
+    return new BattleResult({
+      winner: props.winner,
+      loser: props.loser,
+      isDraw: props.isDraw,
+      rounds: roundsProps,
+      maxRounds: props.maxRounds,
+    })
+  }
+
 }
